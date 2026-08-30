@@ -1,0 +1,6 @@
+name: SeedPouch
+version: 1.0.0
+main: beanshapeAli.SeedPouch.SeedPouch
+description: Plant seeds in a 5x5 area
+author: beanshapeAli
+api-version: '1.21.10'
