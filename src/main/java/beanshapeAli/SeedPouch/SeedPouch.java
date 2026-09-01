@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SeedPouch extends JavaPlugin implements Listener {
@@ -50,7 +51,7 @@ public class SeedPouch extends JavaPlugin implements Listener {
             return false;
         }
 
-        return item.getItemMeta().getEquippable().getSlot() == EquipmentSlot.HAND;
+        return item.getPersistentDataContainer().has(NamespacedKey.fromString("newcoming:plantaoe"));
     }
 
     private boolean isSeed(ItemStack heldItem) {
