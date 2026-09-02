@@ -9,6 +9,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -83,8 +85,14 @@ public class SeedPouch extends JavaPlugin implements Listener {
     private int plantAoE(Block center, Material seedType, Player player) {
         int planted = 0;
         int seedsHeld = player.getInventory().getItemInOffHand().getAmount();
+        ItemStack pouch = player.getInventory().getItemInMainHand();
 
-        int radius = 2;
+        int radius = 1;
+
+        ItemMeta pouchMeta = player.getInventory().getItemInMainHand().getItemMeta();
+        Damageable pouchDamage = (Damageable) pouchMeta;
+
+        int oldDamage = pouchDamage.getDamage();
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
@@ -96,6 +104,20 @@ public class SeedPouch extends JavaPlugin implements Listener {
                     plantUpon.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, plantUpon.getLocation(), 2);
                     planted++;
                 }
+            }
+        }
+
+        int newDamage = oldDamage + planted;
+
+        if (!player.getGameMode().name().equalsIgnoreCase("CREATIVE")) {
+            if (pouchDamage.getMaxDamage() <= newDamage) {
+                player.getInventory().setItemInMainHand(null);
+                player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
+            } else if (!player.getGameMode().name().equalsIgnoreCase("CREATIVE")) {
+                pouchDamage.setDamage(newDamage);
+
+                pouch.setItemMeta(pouchMeta);
+                player.getInventory().setItemInMainHand(pouch);
             }
         }
 
